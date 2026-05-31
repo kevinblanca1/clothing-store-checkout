@@ -96,7 +96,7 @@ e2e/                      # Playwright specs, API mocks, and fixtures
 - `radix-ui`, `shadcn` — accessible component primitives (shadcn style `radix-nova`)
 - `tailwindcss`, `@tailwindcss/vite`, `tw-animate-css` — styling
 - `class-variance-authority`, `clsx`, `tailwind-merge` — class composition
-- `lucide-react` — icons · `sonner` — toasts · `next-themes` — theming
+- `lucide-react` — icons · `sonner` — toasts
 - `@fontsource-variable/geist` — font
 
 **Data**

@@ -13,6 +13,7 @@ import {
   Sheet,
   SheetClose,
   SheetContent,
+  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
@@ -40,6 +41,9 @@ export function CartDrawer({ open, onOpenChange }: CartDrawerProps) {
       <SheetContent className="flex w-full flex-col gap-0 sm:max-w-md">
         <SheetHeader className="border-b">
           <SheetTitle>Your Cart ({itemCount})</SheetTitle>
+          <SheetDescription className="sr-only">
+            Review the items in your cart, adjust quantities, and proceed to checkout.
+          </SheetDescription>
         </SheetHeader>
 
         {items.length === 0 ? (

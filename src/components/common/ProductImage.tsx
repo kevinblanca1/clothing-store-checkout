@@ -16,7 +16,7 @@ export function ProductImage({ src, alt, className, imgClassName }: ProductImage
     <div className={cn("relative overflow-hidden bg-white", className)}>
       {!loaded && <Skeleton className="absolute inset-0 h-full w-full" />}
       <img
-        src={src}
+        src={src || undefined}
         alt={alt}
         loading="lazy"
         onLoad={() => setLoaded(true)}
