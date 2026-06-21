@@ -5,6 +5,7 @@ import { PROMO_CODE, PROMO_RATE } from "@/features/cart/cartSlice";
 
 export const selectCartItems = (state: RootState) => state.cart.items;
 export const selectPromoCode = (state: RootState) => state.cart.promoCode;
+export const selectUser = (state: RootState) => state.cart.user;
 
 export const selectItemCount = createSelector([selectCartItems], (items) =>
   items.reduce((sum, item) => sum + item.quantity, 0),

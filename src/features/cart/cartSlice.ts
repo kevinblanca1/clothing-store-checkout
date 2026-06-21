@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { CartItem } from "@/types/cart";
+import type { CartItem, User } from "@/types/cart";
 import { makeLineKey } from "@/types/cart";
 import type { Variant } from "@/lib/variants";
 
@@ -9,11 +9,13 @@ export const PROMO_RATE = 0.1;
 export interface CartState {
   items: CartItem[];
   promoCode: string | null;
+  user: User | null;
 }
 
 const initialState: CartState = {
   items: [],
   promoCode: null,
+  user: null,
 };
 
 export interface AddItemPayload {
@@ -29,6 +31,11 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
+    addUser(state, action: PayloadAction<User>) {
+      const user = action.payload;
+
+      state.user = {...user};
+    },
     addItem(state, action: PayloadAction<AddItemPayload>) {
       const { productId, variant, quantity = 1 } = action.payload;
       const lineKey = makeLineKey(productId, variant);
@@ -67,12 +74,13 @@ const cartSlice = createSlice({
     clearPromo(state) {
       state.promoCode = null;
     },
-    clearCart() {
-      return initialState;
+    clearCart(state) {
+      state.items = [];
+      state.promoCode = null;
     },
   },
 });
 
-export const { addItem, removeItem, updateQuantity, applyPromo, clearPromo, clearCart } =
+export const { addItem, removeItem, updateQuantity, applyPromo, clearPromo, clearCart, addUser } =
   cartSlice.actions;
 export default cartSlice.reducer;

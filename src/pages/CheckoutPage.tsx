@@ -5,13 +5,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { ArrowLeft, CheckCircle2, ShoppingBag, Tag, X } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/app/hooks";
-import { applyPromo, clearCart, clearPromo, PROMO_CODE } from "@/features/cart/cartSlice";
+import { applyPromo, clearCart, clearPromo, PROMO_CODE, addUser } from "@/features/cart/cartSlice";
 import {
   selectCartItems,
   selectDiscount,
   selectIsPromoApplied,
   selectSubtotal,
   selectTotal,
+  selectUser,
 } from "@/features/cart/cartSelectors";
 import { checkoutSchema, type CheckoutFormValues } from "@/validation/checkoutSchema";
 import { formatCurrency } from "@/lib/money";
@@ -32,6 +33,7 @@ export function CheckoutPage() {
   const discount = useAppSelector(selectDiscount);
   const total = useAppSelector(selectTotal);
   const promoApplied = useAppSelector(selectIsPromoApplied);
+  const user = useAppSelector(selectUser);
 
   const [placedTotal, setPlacedTotal] = useState<number | null>(null);
 
@@ -45,12 +47,13 @@ export function CheckoutPage() {
   } = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
-      fullName: "",
-      email: "",
-      address: "",
-      city: "",
-      postalCode: "",
+      fullName: user?.fullName ?? "",
+      email: user?.email ?? "",
+      address: user?.address ?? "",
+      city: user?.city ?? "",
+      postalCode: user?.postalCode ?? "",
       promoCode: "",
+      rememberMe: false,
     },
   });
 
@@ -81,10 +84,21 @@ export function CheckoutPage() {
 
   const onSubmit = (values: CheckoutFormValues) => {
     const code = (values.promoCode ?? "").trim();
+    const { fullName, address, email, city, postalCode, rememberMe } = values;
+
     if (code !== "") dispatch(applyPromo(code));
     else dispatch(clearPromo());
 
     setPlacedTotal(total);
+    if (rememberMe) {
+      dispatch(addUser({
+        fullName,
+        address,
+        email,
+        city,
+        postalCode,
+      }))
+    }
     dispatch(clearCart());
     toast.success("Order placed! Thank you for shopping.");
   };
@@ -140,19 +154,22 @@ export function CheckoutPage() {
             </CardHeader>
             <CardContent className="grid gap-4 sm:grid-cols-2">
               <Field label="Full name" error={errors.fullName?.message} className="sm:col-span-2">
-                <Input {...register("fullName")} placeholder="Jane Doe" />
+                <Input {...register("fullName")} placeholder="Jane Doe"/>
               </Field>
               <Field label="Email" error={errors.email?.message} className="sm:col-span-2">
-                <Input type="email" {...register("email")} placeholder="jane@example.com" />
+                <Input type="email" {...register("email")} placeholder="jane@example.com" defaultValue={user?.email}/>
               </Field>
               <Field label="Address" error={errors.address?.message} className="sm:col-span-2">
-                <Input {...register("address")} placeholder="123 Market St" />
+                <Input {...register("address")} placeholder="123 Market St" defaultValue={user?.address}/>
               </Field>
               <Field label="City" error={errors.city?.message}>
-                <Input {...register("city")} placeholder="Springfield" />
+                <Input {...register("city")} placeholder="Springfield" defaultValue={user?.city}/>
               </Field>
               <Field label="Postal code" error={errors.postalCode?.message}>
-                <Input {...register("postalCode")} placeholder="12345" />
+                <Input {...register("postalCode")} placeholder="12345" defaultValue={user?.postalCode}/>
+              </Field>
+              <Field label="Remember Me">
+                <input type="checkbox" {...register("rememberMe")} />
               </Field>
             </CardContent>
           </Card>

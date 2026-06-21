@@ -24,6 +24,7 @@ export const checkoutSchema = z.object({
     .trim()
     .regex(/^[A-Za-z0-9 -]{3,10}$/, "Enter a valid postal code"),
   promoCode: promoCodeSchema,
+  rememberMe: z.boolean(),
 });
 
 export type CheckoutFormValues = z.infer<typeof checkoutSchema>;

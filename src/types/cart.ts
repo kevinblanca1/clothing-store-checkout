@@ -11,6 +11,14 @@ export interface CartItem {
   quantity: number;
 }
 
+export interface User {
+  fullName?: string;
+  email?: string;
+  address?: string;
+  city?: string;
+  postalCode?: string;
+}
+
 /** Stable key for a product + variant combination. */
 export function makeLineKey(productId: number, variant: Variant): string {
   return `${productId}-${variant.size}-${variant.color}`;
